@@ -5,6 +5,7 @@
  */
 IHR.addMissions(3, [
     {
+        id: 'habitat-g3-04',
         zone: 'beach',
         title: 'Turtle Life Cycle',
         goal: 'Put the stages of a sea turtle’s life in order to make a loop.',
@@ -50,6 +51,7 @@ IHR.addMissions(3, [
     },
 
     {
+        id: 'habitat-g3-05',
         zone: 'jungle',
         title: 'Born With It, or Not?',
         goal: 'Sort each trait: passed down from parents, or shaped by the environment.',
@@ -98,6 +100,7 @@ IHR.addMissions(3, [
     },
 
     {
+        id: 'habitat-g3-06',
         zone: 'jungle',
         title: 'Monsoon Weather Watch',
         goal: 'Read a year of island rainfall to find the drier and wetter seasons.',
@@ -146,6 +149,7 @@ IHR.addMissions(3, [
     },
 
     {
+        id: 'habitat-g3-07',
         zone: 'lagoon',
         title: 'Storm Shields',
         goal: 'Choose every idea that protects the island from storm waves and flooding.',
@@ -192,6 +196,7 @@ IHR.addMissions(3, [
     },
 
     {
+        id: 'habitat-g3-08',
         zone: 'lagoon',
         title: 'Safety in Numbers',
         goal: 'Compare how many fish survive in a school and on their own.',
@@ -242,6 +247,7 @@ IHR.addMissions(3, [
     },
 
     {
+        id: 'habitat-g3-09',
         zone: 'jungle',
         title: 'Clues in Coral Rock',
         goal: 'Builders digging a well find fossil coral and shells under the jungle. Work out what they mean.',
@@ -285,6 +291,7 @@ IHR.addMissions(3, [
     },
 
     {
+        id: 'habitat-g3-10',
         zone: 'beach',
         title: 'Sand-Coloured Crabs',
         goal: 'Track pale and dark ghost crabs on white sand while herons hunt.',
@@ -336,6 +343,7 @@ IHR.addMissions(3, [
     },
 
     {
+        id: 'habitat-g3-11',
         zone: 'beach',
         title: 'Tide Times',
         goal: 'Put the tide’s pattern in order so you can predict it.',

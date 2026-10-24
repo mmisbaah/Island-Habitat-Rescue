@@ -59,7 +59,7 @@ IHR.screens.quiz = {
         this.el.innerHTML = `
             <section class="quiz">
                 <div class="mode-top">
-                    <button class="btn btn-ghost" onclick="App.go('home')">${IHR.icon('back')} Home</button>
+                    <button class="btn btn-ghost" ${IHR.ui.action('App.go', 'home')}>${IHR.icon('back')} Home</button>
                     <span class="mode-pill">❓ Science Quiz · Grade ${App.grade}</span>
                 </div>
                 <ol class="quiz-dots" aria-label="Question ${s.i + 1} of ${s.qs.length}">
@@ -76,7 +76,7 @@ IHR.screens.quiz = {
                         ${item.choices.map((c, k) => {
                             const cls = !answered ? '' : k === item.correct ? 'is-right' : k === s.picked ? 'is-wrong' : 'is-dim';
                             return `
-                                <button class="choice ${cls}" onclick="IHR.screens.quiz.answer(${k})" ${answered ? 'disabled' : ''}>
+                                <button class="choice ${cls}" ${IHR.ui.action('IHR.screens.quiz.answer', k)} ${answered ? 'disabled' : ''}>
                                     <span class="choice-mark is-letter" aria-hidden="true">${String.fromCharCode(65 + k)}</span>
                                     <span class="choice-text">${c}</span>
                                     <span class="tick-box">${answered && k === item.correct ? IHR.icon('check') : answered && k === s.picked ? IHR.icon('x') : ''}</span>
@@ -87,7 +87,7 @@ IHR.screens.quiz = {
                     ${answered ? `
                         <div class="quiz-feedback ${right ? 'is-right' : 'is-wrong'}">
                             <p><b>${right ? 'Correct!' : 'Not quite.'}</b> ${right ? '' : `The answer is “${item.choices[item.correct]}”.`}</p>
-                            <button class="btn btn-coral btn-lg" onclick="IHR.screens.quiz.next()">${s.i + 1 < s.qs.length ? 'Next question' : 'See my score'} ${IHR.icon('next')}</button>
+                            <button class="btn btn-coral btn-lg" ${IHR.ui.action('IHR.screens.quiz.next')}>${s.i + 1 < s.qs.length ? 'Next question' : 'See my score'} ${IHR.icon('next')}</button>
                         </div>
                     ` : ''}
                 </div>
@@ -136,8 +136,8 @@ IHR.screens.quiz = {
                         <div class="mission-list">${missedMissions.map(m => IHR.screens.hub.card(m)).join('')}</div>
                     ` : '<p>A perfect score. Brilliant!</p>'}
                     <div class="row is-center">
-                        <button class="btn btn-coral btn-lg" onclick="IHR.screens.quiz.start()">${IHR.icon('reset')} New quiz</button>
-                        <button class="btn btn-sand" onclick="App.go('home')">${IHR.icon('back')} Home</button>
+                        <button class="btn btn-coral btn-lg" ${IHR.ui.action('IHR.screens.quiz.start')}>${IHR.icon('reset')} New quiz</button>
+                        <button class="btn btn-sand" ${IHR.ui.action('App.go', 'home')}>${IHR.icon('back')} Home</button>
                     </div>
                 </div>
             </section>

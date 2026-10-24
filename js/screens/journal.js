@@ -19,13 +19,13 @@ IHR.screens.journal = {
             <section class="journal">
                 <div class="journal-head">
                     <div>
-                        <button class="btn btn-ghost" onclick="App.go('home')">${IHR.icon('back')} Home</button>
+                        <button class="btn btn-ghost" ${IHR.ui.action('App.go', 'home')}>${IHR.icon('back')} Home</button>
                         <h1 class="display">Field Journal</h1>
                         <p class="journal-count"><b>${S.journalCount()}</b> of ${ids.length} species recorded</p>
                     </div>
                     <div class="filter-tabs" role="tablist" aria-label="Filter by zone">
                         ${['all', 'lagoon', 'beach', 'jungle'].map(z => `
-                            <button role="tab" aria-selected="${this.zone === z}" class="grade-tab ${this.zone === z ? 'is-active' : ''}" onclick="IHR.screens.journal.setZone('${z}')">
+                            <button role="tab" aria-selected="${this.zone === z}" class="grade-tab ${this.zone === z ? 'is-active' : ''}" ${IHR.ui.action('IHR.screens.journal.setZone', z)}>
                                 ${z === 'all' ? 'All' : `${IHR.ZONES[z].emoji} ${IHR.ZONES[z].name}`}
                             </button>
                         `).join('')}
@@ -42,7 +42,7 @@ IHR.screens.journal = {
                                     <div class="species-art" aria-hidden="true">${s.emoji}</div>
                                     <h3>Not yet recorded</h3>
                                     ${IHR.ui.zoneChip(s.zone)}
-                                    ${m ? `<p>Found in <button class="link" onclick="App.go('mission', { id: '${m.id}' })">Mission ${m.num}: ${m.title}</button></p>` : '<p>Found in Reef Rush.</p>'}
+                                    ${m ? `<p>Found in <button class="link" ${IHR.ui.action('App.go', 'mission', { id: m.id })}>Mission ${m.num}: ${m.title}</button></p>` : '<p>Found in Reef Rush.</p>'}
                                 </article>
                             `;
                         }

@@ -11,6 +11,7 @@ window.IHR = window.IHR || {};
     const RANK = { not_started: 0, explored: 1, practised: 2, demonstrated: 3 };
 
     const blank = () => ({
+        version: 3,
         missions: {},
         journal: {},
         rushBest: 0,
@@ -20,34 +21,79 @@ window.IHR = window.IHR || {};
         muted: false
     });
 
+    const object = v => v && typeof v === 'object' && !Array.isArray(v) ? v : {};
+    const integer = (v, max = Number.MAX_SAFE_INTEGER) => Number.isSafeInteger(v) && v >= 0 && v <= max;
+    const day = v => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v) && !Number.isNaN(Date.parse(v));
+    function sanitize(raw) {
+        const s = object(raw), clean = blank();
+        const missionIds = new Set(IHR.MISSIONS.map(m => m.id));
+        Object.entries(object(s.missions)).forEach(([id, value]) => {
+            const m = object(value);
+            if (missionIds.has(id)) clean.missions[id] = {
+                status: Object.hasOwn(RANK, m.status) ? m.status : 'not_started',
+                stars: integer(m.stars, 3) ? m.stars : 0
+            };
+        });
+        Object.entries(object(s.journal)).forEach(([id, value]) => {
+            if (Object.hasOwn(IHR.SPECIES, id) && typeof value === 'string' && !Number.isNaN(Date.parse(value))) clean.journal[id] = value;
+        });
+        Object.entries(object(s.quizBest)).forEach(([grade, score]) => {
+            if (/^[1-6]$/.test(grade) && integer(score, 10)) clean.quizBest[grade] = score;
+        });
+        if (integer(s.rushBest)) clean.rushBest = s.rushBest;
+        if (Number.isInteger(s.grade) && IHR.GRADES.includes(s.grade)) clean.grade = s.grade;
+        clean.muted = s.muted === true;
+        const d = object(s.daily);
+        if (day(d.last) && integer(d.streak)) {
+            clean.daily.last = d.last;
+            clean.daily.streak = d.streak;
+        }
+        Object.entries(object(d.done)).forEach(([key, value]) => {
+            const [date, grade] = key.split('|');
+            if (day(date) && /^[1-6]$/.test(grade) && value === true) clean.daily.done[key] = true;
+        });
+        return clean;
+    }
+
     IHR.store = {
         data: blank(),
+        storageError: false,
+        recovered: false,
 
         load() {
+            this.data = blank();
+            this.storageError = false;
+            this.recovered = false;
             try {
                 const raw = localStorage.getItem(KEY);
                 if (raw) {
                     const saved = JSON.parse(raw);
-                    this.data = Object.assign(blank(), saved);
-                    this.data.daily = Object.assign(blank().daily, saved.daily);
+                    this.data = sanitize(saved);
+                    this.recovered = Object.keys(this.data).some(key => key !== 'version' && JSON.stringify(this.data[key]) !== JSON.stringify(object(saved)[key] ?? blank()[key]));
                     return;
                 }
                 // Carry over badges from the single-file version of the game
                 const old = localStorage.getItem(OLD_KEY);
                 if (old) {
                     const parsed = JSON.parse(old);
-                    Object.keys(parsed).forEach(id => {
-                        if (parsed[id] && parsed[id].status) this.data.missions[id] = { status: parsed[id].status, stars: 0 };
-                    });
+                    this.data = sanitize({ missions: parsed });
                     this.save();
                 }
             } catch (e) {
                 this.data = blank();
+                this.recovered = true;
+                this.storageError = e.name !== 'SyntaxError';
             }
         },
 
         save() {
-            try { localStorage.setItem(KEY, JSON.stringify(this.data)); } catch (e) { /* storage blocked */ }
+            try {
+                localStorage.setItem(KEY, JSON.stringify(this.data));
+                this.storageError = false;
+            } catch (e) {
+                this.storageError = true;
+            }
+            if (IHR.ui && IHR.ui.storageNotice) IHR.ui.storageNotice();
         },
 
         mission(id) {

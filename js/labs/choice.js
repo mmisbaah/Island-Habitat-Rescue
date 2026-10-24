@@ -34,7 +34,7 @@ IHR.labs = IHR.labs || {};
     }
 
     function bars(v) {
-        const max = Math.max(...v.series.flatMap(s => s.values));
+        const max = Math.max(1, ...v.series.flatMap(s => s.values));
         return `
             <div class="legend">
                 ${v.series.map(s => `<span class="tone-${s.tone}"><i class="swatch"></i>${s.label}</span>`).join('')}
@@ -55,6 +55,7 @@ IHR.labs = IHR.labs || {};
                     ${i === v.dividerAfter ? `<div class="bar-divider"><span>${v.dividerLabel}</span></div>` : ''}
                 `).join('')}
             </div>
+            ${IHR.ui.dataTable('Example observations', ['Observation', ...v.series.map(s => s.label)], v.labels.map((label, i) => [label, ...v.series.map(s => s.values[i])]))}
         `;
     }
 
@@ -87,6 +88,9 @@ IHR.labs = IHR.labs || {};
         const observed = [100, 88, 70, 66];
         return `
             <svg class="model-chart" viewBox="0 0 330 176" role="img" aria-label="Model-1 line and Model-2 band compared with four observed years of coral cover">
+                <title>Coral cover: observations and two forecasts</title>
+                <desc>Example model data. A line shows Model 1, a shaded range shows Model 2, and dots show observed cover.</desc>
+                ${[0, 25, 50, 75, 100].map(v => `<line x1="44" y1="${y(v)}" x2="310" y2="${y(v)}" class="chart-grid"/>`).join('')}
                 <line x1="44" y1="150" x2="310" y2="150" class="axis"/>
                 <line x1="44" y1="14" x2="44" y2="150" class="axis"/>
                 <polygon points="${upper.concat(lower).join(' ')}" class="band"/>
@@ -99,6 +103,7 @@ IHR.labs = IHR.labs || {};
                 <text x="306" y="${y(60) - 4}" class="tag-band" text-anchor="end">Model-2 range</text>
             </svg>
             <p class="chart-note">Coral cover index · <span class="obs-key">●</span> observed</p>
+            ${IHR.ui.dataTable('Example coral cover index', ['Year', 'Model 1', 'Model 2 range', 'Observed'], yrs.map(i => [i, (100 * Math.pow(0.85, i)).toFixed(1), `${(100 * Math.pow(0.75, i)).toFixed(1)}–${(100 * Math.pow(0.9, i)).toFixed(1)}`, observed[i] ?? '—']))}
         `;
     }
 
@@ -119,7 +124,7 @@ IHR.labs = IHR.labs || {};
                         const on = st.picked.includes(opt.id);
                         const wrong = st.checked && on && !lab.correct.includes(opt.id);
                         return `
-                            <button class="option ${on ? 'is-on' : ''} ${wrong ? 'is-wrong' : ''}" onclick="Mission.act('pick', '${opt.id}')" aria-pressed="${on}">
+                            <button class="option ${on ? 'is-on' : ''} ${wrong ? 'is-wrong' : ''}" ${IHR.ui.action('Mission.act', 'pick', opt.id)} aria-pressed="${on}">
                                 <span class="option-emoji" aria-hidden="true">${opt.emoji}</span>
                                 <span class="option-text">
                                     <b>${opt.label}</b>

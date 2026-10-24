@@ -18,7 +18,7 @@ IHR.screens.hub = {
         el.innerHTML = `
             <section class="hub">
                 <div class="mode-top">
-                    <button class="btn btn-ghost" onclick="App.go('home')">${IHR.icon('back')} Home</button>
+                    <button class="btn btn-ghost" ${IHR.ui.action('App.go', 'home')}>${IHR.icon('back')} Home</button>
                     <span class="mode-pill">🗺️ Island Rescue · Grade ${grade}</span>
                 </div>
 
@@ -49,7 +49,7 @@ IHR.screens.hub = {
                 <div class="panel missions-panel">
                     <div class="grade-tabs" role="tablist" aria-label="Choose a grade">
                         ${IHR.GRADES.map(n => `
-                            <button role="tab" aria-selected="${n === grade}" class="grade-tab ${n === grade ? 'is-active' : ''}" onclick="IHR.screens.hub.setGrade(${n})">
+                            <button role="tab" aria-selected="${n === grade}" class="grade-tab ${n === grade ? 'is-active' : ''}" ${IHR.ui.action('IHR.screens.hub.setGrade', n)}>
                                 Grade ${n}
                             </button>
                         `).join('')}
@@ -72,12 +72,12 @@ IHR.screens.hub = {
         }
     },
 
-    card(m, extra = '') {
+    card(m) {
         const prog = IHR.store.mission(m.id);
         const restored = prog.status === 'demonstrated';
         const statusText = { not_started: 'Not started', explored: 'Explored', practised: 'Practised', demonstrated: 'Restored' }[prog.status];
         return `
-            <button class="mission-card zone-${m.zone} ${restored ? 'is-restored' : ''}" onclick="App.go('mission', { id: '${m.id}'${extra} })">
+            <button class="mission-card zone-${m.zone} ${restored ? 'is-restored' : ''}" ${IHR.ui.action('App.go', 'mission', { id: m.id })}>
                 <span class="mission-art" aria-hidden="true">${m.siteEmoji}</span>
                 <span class="mission-info">
                     <span class="mission-meta">Mission ${m.num} · ${IHR.ZONES[m.zone].name}</span>

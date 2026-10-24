@@ -26,7 +26,7 @@ IHR.labs.sequence = {
                         <li class="loop-spot ${mark}">
                             <span class="loop-n">Stage ${i + 1}</span>
                             ${item ? `
-                                <button class="item tone-${item.tone}" onclick="Mission.act('remove', ${i})" aria-label="${item.label}. Tap to take it back.">
+                                <button class="item tone-${item.tone}" ${IHR.ui.action('Mission.act', 'remove', i)} aria-label="${item.label}. Tap to take it back.">
                                     <span class="item-emoji" aria-hidden="true">${item.emoji}</span>${item.label}
                                 </button>
                             ` : '<span class="slot-empty">empty</span>'}
@@ -38,7 +38,7 @@ IHR.labs.sequence = {
 
             <div class="tray">
                 ${remaining.length ? remaining.map(p => `
-                    <button class="item tone-${p.tone}" onclick="Mission.act('add', '${p.id}')">
+                    <button class="item tone-${p.tone}" ${IHR.ui.action('Mission.act', 'add', p.id)}>
                         <span class="item-emoji" aria-hidden="true">${p.emoji}</span>${p.label}
                     </button>
                 `).join('') : '<span class="tray-done">Loop complete. Run the trial!</span>'}

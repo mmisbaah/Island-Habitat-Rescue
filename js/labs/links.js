@@ -30,8 +30,8 @@ IHR.labs = IHR.labs || {};
         const still = IHR.ui.reducedMotion();
 
         const draw = () => {
-            const flows = lab.pairs.filter(p => p.expect === 'ab').map(p => {
-                const a = lab.nodes[p.a], b = lab.nodes[p.b];
+            const flows = lab.pairs.filter(p => p.expect !== 'none').map(p => {
+                const a = lab.nodes[p.expect === 'ba' ? p.b : p.a], b = lab.nodes[p.expect === 'ba' ? p.a : p.b];
                 const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy);
                 const ux = dx / len, uy = dy / len;
                 const x1 = a.x + ux * (R + 4), y1 = a.y + uy * (R + 4);
@@ -54,7 +54,7 @@ IHR.labs = IHR.labs || {};
             `).join('');
 
             const prompt = lab.event && !removed.size
-                ? `<p>Energy is flowing. Now test the web:</p><button class="btn btn-coral" onclick="Mission.trialAct('event')">${lab.event.label}</button>`
+                ? `<p>Energy is flowing. Now test the web:</p><button class="btn btn-coral" ${IHR.ui.action('Mission.trialAct', 'event')}>${lab.event.label}</button>`
                 : lab.event ? `<p><b>${lab.event.message}</b></p>` : '<p>Each spark is energy moving from food to eater.</p>';
 
             ctx.el.innerHTML = `
@@ -62,6 +62,8 @@ IHR.labs = IHR.labs || {};
                     <div class="trial-head"><span class="eyebrow">Energy flow</span><b>${removed.size ? 'After the change' : 'Watch the energy move'}</b></div>
                     <div class="svg-wrap">
                         <svg class="web" viewBox="0 0 600 350" role="img" aria-label="Energy flow diagram">
+                            <title>Food web: energy moves from food to eater</title>
+                            <desc>${lab.pairs.filter(p => p.expect !== 'none').map(p => `${lab.nodes[p.expect === 'ba' ? p.b : p.a].label} to ${lab.nodes[p.expect === 'ba' ? p.a : p.b].label}`).join('. ')}. Dashed arrows show a link lost after a species is removed.</desc>
                             <defs>
                                 <marker id="head" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#e8553f"/></marker>
                                 <marker id="head-dead" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#b9b2a0"/></marker>
@@ -69,6 +71,8 @@ IHR.labs = IHR.labs || {};
                             ${flows}${nodes}
                         </svg>
                     </div>
+                    <p class="diagram-key"><span>● → Energy from food to eater</span><span>┄ → Lost feeding link</span></p>
+                    <ul class="web-reading">${lab.pairs.filter(p => p.expect !== 'none').map(p => `<li>${lab.nodes[p.expect === 'ba' ? p.b : p.a].label} → ${lab.nodes[p.expect === 'ba' ? p.a : p.b].label}${removed.has(p.a) || removed.has(p.b) ? ' (link lost)' : ''}</li>`).join('')}</ul>
                     <div class="trial-prompt">${prompt}</div>
                 </div>
             `;
@@ -95,8 +99,17 @@ IHR.labs = IHR.labs || {};
         },
 
         render(lab, st) {
+            const selected = lab.pairs.filter((p, i) => st.links[i] !== 'none');
             return `
                 <p class="lab-tip">Arrows point the way energy flows: <b>food → eater</b>. Tap a link to change it.</p>
+                <div class="web-preview" aria-label="Your food web">
+                    <div class="diagram-heading"><span class="eyebrow">Your food web</span><span>${selected.length} energy link${selected.length === 1 ? '' : 's'}</span></div>
+                    ${selected.length ? selected.map(p => {
+                        const i = lab.pairs.indexOf(p), reverse = st.links[i] === 'ba';
+                        const a = lab.nodes[reverse ? p.b : p.a], b = lab.nodes[reverse ? p.a : p.b];
+                        return `<div class="energy-route"><span class="tone-${a.tone}">${a.emoji} ${a.label}</span><b aria-label="energy flows to">→</b><span class="tone-${b.tone}">${b.emoji} ${b.label}</span></div>`;
+                    }).join('') : '<p class="muted">Build your diagram using the link controls below.</p>'}
+                </div>
                 <div class="link-rows">
                     ${lab.pairs.map((p, i) => {
                         const s = STATES[st.links[i]];
@@ -104,7 +117,7 @@ IHR.labs = IHR.labs || {};
                         return `
                             <div class="link-row ${wrong ? 'is-wrong' : ''}">
                                 ${nodeChip(lab.nodes[p.a])}
-                                <button class="link-btn ${s.cls}" onclick="Mission.act('cycle', ${i})" aria-label="Link between ${lab.nodes[p.a].label} and ${lab.nodes[p.b].label}: ${s.label}. Tap to change.">
+                                <button class="link-btn ${s.cls}" ${IHR.ui.action('Mission.act', 'cycle', i)} aria-label="Link between ${lab.nodes[p.a].label} and ${lab.nodes[p.b].label}: ${s.label}. Tap to change.">
                                     <span class="link-glyph" aria-hidden="true">${s.glyph}</span>${s.label}
                                 </button>
                                 ${nodeChip(lab.nodes[p.b])}

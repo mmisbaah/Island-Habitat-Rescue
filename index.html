@@ -10,12 +10,13 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Lilita+One&display=swap">
 <link rel="stylesheet" href="css/theme.css">
 <link rel="stylesheet" href="css/screens.css">
+<link rel="stylesheet" href="css/polish.css">
 </head>
 <body>
 
 <header class="topbar">
     <div class="topbar-inner">
-        <button class="brand" onclick="App.go('home')" aria-label="Home">
+        <button class="brand" data-action="App.go" data-args="%5B%22home%22%5D" aria-label="Home">
             <span class="brand-mark" aria-hidden="true">🐢</span>
             <span class="brand-text">
                 <b>Island Habitat Rescue</b>
@@ -23,57 +24,27 @@
             </span>
         </button>
         <nav class="topbar-tools" aria-label="Game tools">
-            <button class="stat" onclick="App.go('hub')" title="Stars earned">
+            <button class="stat" data-action="App.go" data-args="%5B%22hub%22%5D" title="Stars earned">
                 <span id="stat-star-icon"></span><span id="stat-stars">0</span>
             </button>
-            <button class="stat" onclick="App.go('journal')" title="Field Journal">
+            <button class="stat" data-action="App.go" data-args="%5B%22journal%22%5D" title="Field Journal">
                 <span aria-hidden="true">📖</span><span id="stat-journal">0</span>
             </button>
-            <button class="icon-btn" id="btn-sound" onclick="App.toggleSound()" aria-label="Sound on or off"></button>
-            <button class="icon-btn" id="btn-settings" onclick="App.openSettings()" aria-label="Settings and progress"></button>
+            <button class="icon-btn" id="btn-sound" data-action="App.toggleSound" data-args="%5B%5D" aria-label="Sound on or off"></button>
+            <button class="icon-btn" id="btn-settings" data-action="App.openSettings" data-args="%5B%5D" aria-label="Settings and progress"></button>
         </nav>
     </div>
 </header>
 
+<p id="storage-notice" class="storage-notice" role="status" hidden></p>
 <main id="app" class="app"></main>
 
 <div id="sippy" class="sippy" hidden></div>
 
-<div id="modal" class="modal" hidden onclick="if (event.target === this) App.closeModal()">
+<div id="modal" class="modal" hidden data-modal-backdrop>
     <div class="modal-card panel" id="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title"></div>
 </div>
 
-<!-- Core -->
-<script src="js/core/icons.js"></script>
-<script src="js/core/audio.js"></script>
-<script src="js/core/store.js"></script>
-<script src="js/core/ui.js"></script>
-<script src="js/core/sippy.js"></script>
-<!-- Data -->
-<script src="js/data/species.js"></script>
-<script src="js/data/missions.js"></script>
-<script src="js/data/missions-g1.js"></script>
-<script src="js/data/missions-g2.js"></script>
-<script src="js/data/missions-g3.js"></script>
-<script src="js/data/missions-g4.js"></script>
-<script src="js/data/missions-g5.js"></script>
-<script src="js/data/missions-g6.js"></script>
-<script src="js/data/catalog.js"></script>
-<!-- Visual labs -->
-<script src="js/labs/match.js"></script>
-<script src="js/labs/dials.js"></script>
-<script src="js/labs/choice.js"></script>
-<script src="js/labs/sequence.js"></script>
-<script src="js/labs/links.js"></script>
-<script src="js/labs/cascade.js"></script>
-<!-- Screens -->
-<script src="js/screens/island-map.js"></script>
-<script src="js/screens/home.js"></script>
-<script src="js/screens/hub.js"></script>
-<script src="js/screens/mission.js"></script>
-<script src="js/screens/journal.js"></script>
-<script src="js/screens/reef-rush.js"></script>
-<script src="js/screens/quiz.js"></script>
-<script src="js/app.js"></script>
+<script type="module" src="js/main.js"></script>
 </body>
 </html>

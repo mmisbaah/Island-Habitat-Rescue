@@ -5,6 +5,7 @@
  */
 IHR.addMissions(4, [
     {
+        id: 'habitat-g4-04',
         zone: 'lagoon',
         title: 'Super Senses',
         goal: 'Match each animal’s special sense to the job it does.',
@@ -56,6 +57,7 @@ IHR.addMissions(4, [
     },
 
     {
+        id: 'habitat-g4-05',
         zone: 'jungle',
         title: 'Plant Armour',
         goal: 'Match each plant structure to the way it helps the plant survive.',
@@ -106,6 +108,7 @@ IHR.addMissions(4, [
     },
 
     {
+        id: 'habitat-g4-06',
         zone: 'beach',
         title: 'Waves Wear the Coast',
         goal: 'Compare a beach behind a healthy reef with one behind a broken reef.',
@@ -162,6 +165,7 @@ IHR.addMissions(4, [
     },
 
     {
+        id: 'habitat-g4-07',
         zone: 'lagoon',
         title: 'How an Atoll Forms',
         goal: 'Put the steps in order to show how a ring-shaped atoll forms over millions of years.',
@@ -207,6 +211,7 @@ IHR.addMissions(4, [
     },
 
     {
+        id: 'habitat-g4-08',
         zone: 'jungle',
         title: 'Power the Island',
         goal: 'Sort the island’s energy sources into renewable and non-renewable.',
@@ -256,6 +261,7 @@ IHR.addMissions(4, [
     },
 
     {
+        id: 'habitat-g4-09',
         zone: 'beach',
         title: 'Big Waves, Small Waves',
         goal: 'Compare a calm-day wave with a storm wave to see which carries more energy.',
@@ -311,6 +317,7 @@ IHR.addMissions(4, [
     },
 
     {
+        id: 'habitat-g4-10',
         zone: 'beach',
         title: 'Tsunami Ready',
         goal: 'Choose every idea that would keep people safe if a tsunami came.',
@@ -357,6 +364,7 @@ IHR.addMissions(4, [
     },
 
     {
+        id: 'habitat-g4-11',
         zone: 'lagoon',
         title: 'How Herons See Fish',
         goal: 'Put the path of light in order to explain how a heron sees a fish.',

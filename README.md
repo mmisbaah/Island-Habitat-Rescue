@@ -19,31 +19,37 @@ Each mission earns up to three stars: lab solved first try, no hints used, and E
 
 ## Running it
 
-There is no build step and no dependencies. The scripts are plain files loaded in order, so the game works from any static web server:
+There is no build step and no runtime dependencies. An ES module entry point loads the game from any static web server:
 
 ```bash
 python3 -m http.server 8000
 # then open http://localhost:8000
 ```
 
-Opening `index.html` directly from disk also works in most browsers. To publish it, enable **GitHub Pages** on the `main` branch (root folder).
+With Node.js 24 or newer, `npm start` also serves the game at `http://127.0.0.1:4187`. Serve over HTTP; ES modules cannot load by opening `index.html` directly from disk. To publish it, enable **GitHub Pages** on the `main` branch (root folder).
 
 Fonts come from Google Fonts; everything else is in this repository. Progress is saved in the browser's `localStorage`.
+
+## Cloudflare deployment
+
+The game is published at https://habitat.atollingo.com/ using the `atollingo-island-habitat` Worker and the custom domain declared in `wrangler.jsonc`. Run `npm run build`, then `wrangler deploy --config wrangler.jsonc` with an authenticated Cloudflare CLI. Only `index.html`, `css/`, and `js/` are packaged into `dist/`; source tools, tests, and repository metadata are excluded.
 
 ## Project layout
 
 ```
-index.html              Page shell and script order
+index.html              Page shell and module entry point
 css/
   theme.css             Colour and type tokens, buttons, top bar, Sippy, modal
   screens.css           Home, island map, missions, labs, journal, quiz, Reef Rush
+  polish.css            Field station styling, accessible charts and responsive diagrams
 js/
-  core/                 Icons, sound effects, saved progress, shared helpers, Sippy
+  main.js               Explicit module import order
+  core/                 Icons, audio, validated saves, view helpers, delegated events, Sippy
   data/
     species.js          Field Journal species
     missions.js         The first three missions of every grade
     missions-g1…g6.js   Eight more missions per grade
-    catalog.js          Numbers missions 1–66 and assigns ids
+    catalog.js          Numbers missions and checks permanent IDs
   labs/                 One file per lab type: match, dials, choice, sequence, links, cascade
   screens/              Home, island map, Island Rescue hub, mission flow, journal, quiz, Reef Rush
   app.js                Screen routing, top bar and settings
@@ -61,6 +67,18 @@ Missions are data. Open the grade file in `js/data/` and add an object with the 
 - `cascade`: the food-web heatwave simulation
 
 `catalog.js` numbers the missions automatically, and the island map places each one by its `zone` (`lagoon`, `beach` or `jungle`, up to six per zone per grade).
+
+Give each mission an explicit unique `id`. Keep that ID forever, even when changing its title or position: browser progress is keyed by ID. All original IDs are preserved. Save schema version 3 validates each field while retaining the existing storage key and migrating older valid results.
+
+Use `${IHR.ui.action('Mission.act', 'pick', option.id)}` to render an action attribute. Add new methods to the explicit allowlist in `js/core/events.js`. Inputs and drag/drop use data attributes too; templates contain no executable inline handlers.
+
+## Checks
+
+Run `npm test` with Node.js 24+. The tests need no installed packages and also run in GitHub Actions. They validate all 66 missions, lab solutions, ID stability, save recovery, scoring, and timer cleanup.
+
+For optional browser checks, install Playwright locally (`npm install --no-save playwright`), run `npx playwright install chromium`, then `node tests/browser.cjs`. Alternatively set `BROWSER_EXECUTABLE` to an installed Chrome/Edge executable. This test starts its own server on port 4191, completes a mission, reloads saved progress, tests keyboard controls and dialogs, renders every mission, and captures four viewport sizes under `test-results/`.
+
+Charts have expandable data tables and distinct line styles. The matching lab supports keyboard placement. Settings contains focus and restores it on close; mission steps focus their headings. Small screens can scroll, and reduced-motion preferences disable decorative animation.
 
 ## Content notes
 

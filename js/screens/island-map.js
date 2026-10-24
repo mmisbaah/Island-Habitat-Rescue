@@ -34,7 +34,11 @@ window.IHR = window.IHR || {};
             const beachCleared = Math.round(S.zoneHealth('beach', grade) * TRASH.length);
 
             const corals = CORALS.map(([x, y], i) => `
-                <circle cx="${x}" cy="${y}" r="${12 + (i % 3) * 4}" fill="${mix('#eeeae0', i % 2 ? '#ff8f7d' : '#f8b84e', hL)}" opacity="0.85"/>
+                <g transform="translate(${x} ${y}) rotate(${i * 37})" opacity="0.85" aria-hidden="true">
+                    <ellipse cy="8" rx="23" ry="12" fill="#0a798b" opacity="0.13"/>
+                    <path d="M0 15V-18 M0 0L-13 -8V-18 M0 -6L13 -16V-24 M0 9L19 0V-9 M-13 -8L-22 -12 M13 -16L22 -14"
+                        fill="none" stroke="${mix('#c8ccc0', i % 2 ? '#ff9e89' : '#ffe09a', hL)}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+                </g>
             `).join('');
 
             const trash = TRASH.map(([x, y], i) => i >= beachCleared
@@ -47,12 +51,11 @@ window.IHR = window.IHR || {};
                 const restored = S.isRestored(m.id);
                 const stars = S.mission(m.id).stars || 0;
                 const pos = spot(m);
-                const go = `App.go('mission', { id: '${m.id}' })`;
                 return `
                     <g class="site is-grade ${restored ? 'is-restored' : ''} ${highlight === m.id ? 'is-new' : ''}"
                         transform="translate(${pos.x} ${pos.y})" tabindex="0" role="button"
                         aria-label="Mission ${m.num}: ${m.title}${restored ? ', restored' : ''}"
-                        onclick="${go}" onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); ${go}; }">
+                        ${IHR.ui.action('App.go', 'mission', { id: m.id })} data-keyboard-action>
                         ${restored ? '' : '<circle class="site-pulse" r="36"/>'}
                         <circle class="site-hit" r="32"/>
                         <text class="site-emoji" text-anchor="middle" y="14">${m.siteEmoji}</text>
@@ -96,11 +99,20 @@ window.IHR = window.IHR || {};
                     <ellipse cx="600" cy="300" rx="300" ry="170" fill="#f6e3b4"/>
                     <ellipse cx="610" cy="290" rx="214" ry="112" fill="${mix('#a39a5e', '#2f8f4e', hJ)}"/>
                     <ellipse cx="590" cy="270" rx="150" ry="70" fill="${mix('#b3a86a', '#3fa35c', hJ)}" opacity="0.7"/>
+                    <path d="M390 390 Q470 465 610 435 T825 350" fill="none" stroke="#d4b677" stroke-width="3" stroke-dasharray="5 9" stroke-linecap="round" opacity="0.65"/>
                     ${palms}
                     ${trash}
 
                     <text x="40" y="40" class="map-label">FARU · OUTER REEF</text>
-                    <text x="960" y="540" class="map-label" text-anchor="end">N ↑ · 200 m</text>
+                    <text x="140" y="100" class="map-biome" text-anchor="middle">LAGOON</text>
+                    <text x="825" y="480" class="map-biome" text-anchor="middle">BEACH</text>
+                    <text x="615" y="400" class="map-biome" text-anchor="middle">JUNGLE</text>
+                    <g transform="translate(924 72)" aria-hidden="true">
+                        <circle r="29" fill="#073c55" fill-opacity="0.5" stroke="#e6f7ee" stroke-opacity="0.6"/>
+                        <path d="M0 -23L8 12L0 6L-8 12Z" fill="#fff1ba"/>
+                        <text y="-37" text-anchor="middle" class="map-label">N</text>
+                    </g>
+                    <text x="960" y="540" class="map-label" text-anchor="end">RESCUE ISLAND · ILLUSTRATED MAP</text>
 
                     <g class="map-boat"><text y="0" font-size="34">⛵</text></g>
 

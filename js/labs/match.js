@@ -19,7 +19,7 @@ IHR.labs.match = {
             const right = st.checked && !wrong;
             return `
                 <button class="item tone-${item.tone} ${wrong ? 'is-wrong' : ''} ${right ? 'is-right' : ''}"
-                    onclick="event.stopPropagation(); Mission.act('unplace', '${item.id}')"
+                    data-focus="card-${item.id}" ${IHR.ui.action('Mission.act', 'unplace', item.id)}
                     aria-label="${item.label}, in ${slot.label}. Tap to take it out.">
                     <span class="item-emoji" aria-hidden="true">${item.emoji}</span>${item.label}
                     ${wrong ? '<span class="mark" aria-label="wrong box">✗</span>' : right ? '<span class="mark" aria-label="correct">✓</span>' : ''}
@@ -35,14 +35,14 @@ IHR.labs.match = {
                     const here = lab.items.filter(i => st.placements[i.id] === slot.id);
                     return `
                         <div class="slot ${st.selected ? 'is-ready' : ''}"
-                            onclick="Mission.act('placeSelected', '${slot.id}')"
-                            ondragover="event.preventDefault(); this.classList.add('is-over')"
-                            ondragleave="this.classList.remove('is-over')"
-                            ondrop="Mission.drop(event, '${slot.id}')">
+                            data-drop-id="${slot.id}">
                             <div class="slot-head">
                                 <span class="slot-emoji" aria-hidden="true">${slot.emoji}</span>
                                 <span><b>${slot.label}</b>${slot.sub ? `<small>${slot.sub}</small>` : ''}</span>
                             </div>
+                            <button class="slot-place" data-focus="slot-${slot.id}"
+                                ${IHR.ui.action('Mission.act', 'placeSelected', slot.id)} ${st.selected ? '' : 'disabled'}
+                                aria-label="Place selected card in ${slot.label}">Place card here ${IHR.icon('next')}</button>
                             <div class="slot-body">
                                 ${here.length ? here.map(item => placedCard(item, slot)).join('') : '<span class="slot-empty">Drop here</span>'}
                             </div>
@@ -54,9 +54,9 @@ IHR.labs.match = {
             <div class="tray">
                 ${tray.length ? tray.map(item => `
                     <button class="item tone-${item.tone} ${st.selected === item.id ? 'is-selected' : ''}"
-                        draggable="true"
-                        ondragstart="Mission.drag(event, '${item.id}')"
-                        onclick="Mission.act('select', '${item.id}')"
+                        data-focus="card-${item.id}" draggable="true"
+                        data-drag-id="${item.id}"
+                        ${IHR.ui.action('Mission.act', 'select', item.id)}
                         aria-pressed="${st.selected === item.id}">
                         <span class="item-emoji" aria-hidden="true">${item.emoji}</span>${item.label}
                     </button>

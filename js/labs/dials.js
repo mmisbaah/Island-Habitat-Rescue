@@ -91,8 +91,8 @@ IHR.labs = IHR.labs || {};
         const decision = `
             <p><b>🌧️ Monsoon showers on days ${cfg.rainDays.join(' and ')}!</b> The rain will soak the soil too. What will you do?</p>
             <div class="row">
-                <button class="btn btn-sand" onclick="Mission.trialAct('plan', 'keep')">💧 Keep watering every day</button>
-                <button class="btn btn-sand" onclick="Mission.trialAct('plan', 'pause')">✋ Skip watering on rainy days</button>
+                <button class="btn btn-sand" ${IHR.ui.action('Mission.trialAct', 'plan', 'keep')}>💧 Keep watering every day</button>
+                <button class="btn btn-sand" ${IHR.ui.action('Mission.trialAct', 'plan', 'pause')}>✋ Skip watering on rainy days</button>
             </div>
         `;
 
@@ -201,7 +201,7 @@ IHR.labs = IHR.labs || {};
                                 </label>
                                 <div class="dial-input" style="--a:${d.min}; --b:${d.max}">
                                     <span class="dial-zone"></span>
-                                    <input id="dial-${d.key}" type="range" min="0" max="100" value="${st.values[d.key]}" oninput="Mission.act('set', '${d.key}', this.value)">
+                                    <input id="dial-${d.key}" type="range" min="0" max="100" value="${st.values[d.key]}" data-input="${d.key}">
                                 </div>
                                 <p class="dial-status" id="dial-status-${d.key}">${status(d, st.values[d.key])}</p>
                             </div>
