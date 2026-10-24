@@ -30,6 +30,10 @@ With Node.js 24 or newer, `npm start` also serves the game at `http://127.0.0.1:
 
 Fonts come from Google Fonts; everything else is in this repository. Progress is saved in the browser's `localStorage`.
 
+## Cloudflare deployment
+
+The game is published at https://habitat.atollingo.com/ using the `atollingo-island-habitat` Worker and the custom domain declared in `wrangler.jsonc`. Run `npm run build`, then `wrangler deploy --config wrangler.jsonc` with an authenticated Cloudflare CLI. Only `index.html`, `css/`, and `js/` are packaged into `dist/`; source tools, tests, and repository metadata are excluded.
+
 ## Project layout
 
 ```
