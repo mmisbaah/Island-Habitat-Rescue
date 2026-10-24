@@ -32,8 +32,8 @@ IHR.screens.rush = {
                     </ul>
                     <p class="muted">Best score: <b>${IHR.store.data.rushBest}</b></p>
                     <div class="row is-center">
-                        <button class="btn btn-coral btn-lg" onclick="IHR.screens.rush.start()">${IHR.icon('play')} Start</button>
-                        <button class="btn btn-ghost" onclick="App.go('home')">${IHR.icon('back')} Home</button>
+                        <button class="btn btn-coral btn-lg" ${IHR.ui.action('IHR.screens.rush.start')}>${IHR.icon('play')} Start</button>
+                        <button class="btn btn-ghost" ${IHR.ui.action('App.go', 'home')}>${IHR.icon('back')} Home</button>
                     </div>
                 </div>
             </section>
@@ -41,6 +41,8 @@ IHR.screens.rush = {
     },
 
     start() {
+        this.stop();
+        this.active = true;
         IHR.audio.click();
         this.state = { score: 0, combo: 0, left: this.DURATION, current: null, last: null, answers: [], locked: false, endsAt: Date.now() + this.DURATION * 1000 };
         this.el.innerHTML = `
@@ -54,7 +56,7 @@ IHR.screens.rush = {
                 <div class="rush-creature" id="rush-creature"></div>
                 <div class="rush-zones">
                     ${Object.keys(IHR.ZONES).map(z => `
-                        <button class="rush-zone zone-${z}" id="rush-${z}" onclick="IHR.screens.rush.answer('${z}')">
+                        <button class="rush-zone zone-${z}" id="rush-${z}" ${IHR.ui.action('IHR.screens.rush.answer', z)}>
                             <span aria-hidden="true">${IHR.ZONES[z].emoji}</span>${IHR.ZONES[z].name}
                         </button>
                     `).join('')}
@@ -79,6 +81,8 @@ IHR.screens.rush = {
     },
 
     next() {
+        if (!this.active) return;
+        if (Date.now() >= this.state.endsAt) return this.end();
         const s = this.state;
         let id;
         do { id = this.pool[Math.floor(Math.random() * this.pool.length)]; } while (id === s.last && this.pool.length > 1);
@@ -98,7 +102,9 @@ IHR.screens.rush = {
 
     answer(zone) {
         const s = this.state;
-        if (!s || s.locked || s.left <= 0) return;
+        if (!this.active || !s || s.locked) return;
+        if (Date.now() >= s.endsAt) return this.end();
+        s.locked = true;
         const sp = IHR.SPECIES[s.current];
         const right = sp.zone === zone;
         s.answers.push({ id: s.current, picked: zone, right });
@@ -108,14 +114,14 @@ IHR.screens.rush = {
             s.score += s.combo >= 3 ? 20 : 10;
             IHR.audio.pop();
             this.flash(zone, 'is-right');
-            setTimeout(() => this.next(), 250);
+            this.queueNext(250);
         } else {
             s.combo = 0;
             s.locked = true;
             IHR.audio.error();
             this.flash(zone, 'is-wrong');
             this.flash(sp.zone, 'is-right');
-            setTimeout(() => this.next(), 900);
+            this.queueNext(900);
         }
 
         document.getElementById('rush-score').textContent = s.score;
@@ -128,6 +134,7 @@ IHR.screens.rush = {
     },
 
     end() {
+        if (!this.active) return;
         const s = this.state;
         this.stop();
         IHR.audio.success();
@@ -153,8 +160,8 @@ IHR.screens.rush = {
                         </ul>
                     ` : '<p>No mistakes at all. Brilliant!</p>'}
                     <div class="row is-center">
-                        <button class="btn btn-coral btn-lg" onclick="IHR.screens.rush.start()">${IHR.icon('reset')} Play again</button>
-                        <button class="btn btn-ghost" onclick="App.go('home')">${IHR.icon('back')} Home</button>
+                        <button class="btn btn-coral btn-lg" ${IHR.ui.action('IHR.screens.rush.start')}>${IHR.icon('reset')} Play again</button>
+                        <button class="btn btn-ghost" ${IHR.ui.action('App.go', 'home')}>${IHR.icon('back')} Home</button>
                     </div>
                 </div>
             </section>
@@ -162,7 +169,18 @@ IHR.screens.rush = {
         IHR.sippy.say(best ? 'A new best score!' : 'Nice rush! Can you beat your best?', 'cheer');
     },
 
+    queueNext(ms) {
+        const round = this.state;
+        this.nextTimer = setTimeout(() => {
+            if (this.active && this.state === round) this.next();
+        }, ms);
+    },
+
     stop() {
+        this.active = false;
+        if (this.state) this.state.locked = true;
+        clearTimeout(this.nextTimer);
+        this.nextTimer = null;
         clearInterval(this.timer);
         this.timer = null;
     }

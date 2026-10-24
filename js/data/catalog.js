@@ -13,7 +13,7 @@ window.IHR = window.IHR || {};
     Object.keys(byGrade).map(Number).sort((a, b) => a - b).forEach(grade => {
         byGrade[grade].forEach((m, i) => {
             m.num = (grade - 1) * 11 + i + 1;
-            m.id = m.id || `habitat-g${grade}-${String(i + 1).padStart(2, '0')}`;
+            if (!m.id || IHR.MISSIONS.some(x => x.id === m.id)) throw new Error('Missing or duplicate mission ID');
             IHR.MISSIONS.push(m);
         });
     });

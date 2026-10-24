@@ -22,11 +22,11 @@ window.IHR = window.IHR || {};
                     <div class="sippy-body">
                         <div class="sippy-name">
                             Sippy
-                            <button class="sippy-listen" onclick="IHR.sippy.listen()" aria-label="Read Sippy's message aloud">${IHR.icon('speak')} Listen</button>
+                            <button class="sippy-listen" ${IHR.ui.action('IHR.sippy.listen')} aria-label="Read Sippy's message aloud">${IHR.icon('speak')} Listen</button>
                         </div>
                         <p class="sippy-text"></p>
                     </div>
-                    <button class="sippy-close" onclick="IHR.sippy.hide()" aria-label="Dismiss">${IHR.icon('x')}</button>
+                    <button class="sippy-close" ${IHR.ui.action('IHR.sippy.hide')} aria-label="Dismiss">${IHR.icon('x')}</button>
                 </div>
             `;
         },

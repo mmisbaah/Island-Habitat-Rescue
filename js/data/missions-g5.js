@@ -5,6 +5,7 @@
  */
 IHR.addMissions(5, [
     {
+        id: 'habitat-g5-04',
         zone: 'jungle',
         title: 'Nature’s Recyclers',
         goal: 'Follow a fallen leaf as decomposers turn it back into food for new plants.',
@@ -49,6 +50,7 @@ IHR.addMissions(5, [
     },
 
     {
+        id: 'habitat-g5-05',
         zone: 'lagoon',
         title: 'The Water Cycle',
         goal: 'Follow water from the lagoon to the sky, onto the island and back again.',
@@ -93,6 +95,7 @@ IHR.addMissions(5, [
     },
 
     {
+        id: 'habitat-g5-06',
         zone: 'beach',
         title: 'Where Is Earth’s Water?',
         goal: 'Read the graph to find where nearly all of Earth’s water is.',
@@ -141,6 +144,7 @@ IHR.addMissions(5, [
     },
 
     {
+        id: 'habitat-g5-07',
         zone: 'beach',
         title: 'Salt from the Sea',
         goal: 'Dry out a dish of seawater in the sun and weigh what is left.',
@@ -197,6 +201,7 @@ IHR.addMissions(5, [
     },
 
     {
+        id: 'habitat-g5-08',
         zone: 'jungle',
         title: 'Why Coconuts Fall',
         goal: 'Explain why a ripe coconut always falls down, even on a perfectly calm day.',
@@ -240,6 +245,7 @@ IHR.addMissions(5, [
     },
 
     {
+        id: 'habitat-g5-09',
         zone: 'beach',
         title: 'Shadow Clock',
         goal: 'Measure a palm tree’s shadow through the day and find the pattern.',
@@ -288,6 +294,7 @@ IHR.addMissions(5, [
     },
 
     {
+        id: 'habitat-g5-10',
         zone: 'beach',
         title: 'Island Action Plan',
         goal: 'Choose every action that helps protect the island’s land and sea.',
@@ -334,6 +341,7 @@ IHR.addMissions(5, [
     },
 
     {
+        id: 'habitat-g5-11',
         zone: 'jungle',
         title: 'Where Does a Tree’s Mass Come From?',
         goal: 'Weigh a breadfruit sapling and its soil, then weigh them again five years later.',

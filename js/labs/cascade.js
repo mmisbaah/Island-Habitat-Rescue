@@ -9,7 +9,7 @@ IHR.labs = IHR.labs || {};
     const LEVELS = [
         { key: 'pred', label: 'Predators · Reef Shark', emoji: '🦈', tone: 'shell', energy: 100, count: 6 },
         { key: 'herb', label: 'Herbivores · Tang & Parrotfish', emoji: '🐟', tone: 'sky', energy: 1000, count: 10 },
-        { key: 'prod', label: 'Producers · Algae & Coral', emoji: '🌿', tone: 'palm', energy: 10000, count: 12 }
+        { key: 'prod', label: 'Producers · Algae', emoji: '🌿', tone: 'palm', energy: 10000, count: 12 }
     ];
 
     // Each level passes on roughly 10% of its energy, so the pyramid narrows upward
@@ -47,8 +47,9 @@ IHR.labs = IHR.labs || {};
         const draw = () => {
             const lines = LEVELS.map(lv => {
                 const pts = Y.slice(0, year + 1).map(y => `${x(y)},${yv(series[lv.key][y]).toFixed(1)}`).join(' ');
+                const dash = lv.key === 'pred' ? '4 7' : lv.key === 'herb' ? '12 6' : 'none';
                 return `
-                    <polyline points="${pts}" class="series tone-${lv.tone}"/>
+                    <polyline points="${pts}" class="series tone-${lv.tone}" stroke-dasharray="${dash}"/>
                     <circle cx="${x(year)}" cy="${yv(series[lv.key][year]).toFixed(1)}" r="6" class="series-dot tone-${lv.tone}"/>
                 `;
             }).join('');
@@ -70,6 +71,10 @@ IHR.labs = IHR.labs || {};
                     <div class="trial-head"><span class="eyebrow">Year ${year} of 5</span><b>${STORY[year]}</b></div>
                     <div class="svg-wrap">
                         <svg class="cascade-chart" viewBox="0 0 600 240" role="img" aria-label="Population of producers, herbivores and predators over five years">
+                            <title>Heatwave ripple through a food web</title>
+                            <desc>Illustrative model. Producer cover drops first, followed by herbivores and predators. Percent of the starting level.</desc>
+                            ${[0, 25, 50, 75, 100].map(v => `<line x1="56" y1="${yv(v)}" x2="556" y2="${yv(v)}" class="chart-grid"/>`).join('')}
+                            <rect x="145" y="20" width="22" height="190" class="heatwave-band"/>
                             <line x1="56" y1="210" x2="556" y2="210" class="axis"/>
                             <line x1="56" y1="20" x2="56" y2="210" class="axis"/>
                             ${[0, 50, 100].map(v => `<text x="48" y="${yv(v) + 4}" class="tick" text-anchor="end">${v}%</text>`).join('')}
@@ -78,8 +83,10 @@ IHR.labs = IHR.labs || {};
                         </svg>
                     </div>
                     <div class="legend">
-                        ${LEVELS.map(lv => `<span class="tone-${lv.tone}"><i class="swatch"></i>${lv.label.split(' · ')[0]}</span>`).join('')}
+                        ${LEVELS.map(lv => `<span class="tone-${lv.tone}"><i class="swatch swatch-${lv.key}"></i>${lv.label.split(' · ')[0]} · ${Math.round(series[lv.key][year])}%</span>`).join('')}
                     </div>
+                    <p class="chart-note">Illustrative model · % of starting level · shaded strip = heatwave in year 1</p>
+                    ${IHR.ui.dataTable('Heatwave model (% of starting level)', ['Year', 'Producers', 'Herbivores', 'Predators'], Y.slice(0, year + 1).map(y => [y, ...['prod', 'herb', 'pred'].map(k => Math.round(series[k][y]) + '%')]))}
                     <div class="crowds">${crowd}</div>
                 </div>
             `;
@@ -115,18 +122,18 @@ IHR.labs = IHR.labs || {};
                         <span><span aria-hidden="true">🌡️</span> Producer cover left after the heatwave</span>
                         <output id="cascade-val">${st.value}%</output>
                     </label>
-                    <div class="dial-input" style="--a:0; --b:${lab.target}">
+                    <div class="dial-input" style="--a:${lab.target - 1}; --b:${lab.target + 1}">
                         <span class="dial-zone is-warning"></span>
-                        <input id="cascade-input" type="range" min="0" max="100" value="${st.value}" oninput="Mission.act('set', this.value)">
+                        <input id="cascade-input" type="range" min="0" max="100" value="${st.value}" data-input="cascade">
                     </div>
-                    <p class="dial-status">The heatwave card says producers drop by 60%. The shaded band marks that range.</p>
+                    <p class="dial-status">100% − ${100 - lab.target}% lost = ${lab.target}% left. Match the marked target.</p>
                 </div>
                 <div id="cascade-visual">${pyramid(lab, st)}</div>
             `;
         },
 
         check(lab, st) {
-            if (st.value > lab.target) return { ok: false, message: `A 60% loss leaves ${lab.target}% or less. Slide producer cover down, then run the trial.` };
+            if (st.value !== lab.target) return { ok: false, message: `A ${100 - lab.target}% loss leaves exactly ${lab.target}%. Set producer cover to ${lab.target}%, then run the trial.` };
             return { ok: true };
         },
 

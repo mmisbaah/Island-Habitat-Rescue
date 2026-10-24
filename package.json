@@ -1,0 +1,9 @@
+{
+  "name": "island-habitat-rescue",
+  "version": "1.1.0",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/game.test.cjs",
+    "start": "node tools/serve.cjs"
+  }
+}

@@ -5,6 +5,7 @@
  */
 IHR.addMissions(2, [
     {
+        id: 'habitat-g2-04',
         zone: 'jungle',
         title: 'Seed Travellers',
         goal: 'Match each seed to the way it travels to a new place to grow.',
@@ -56,6 +57,7 @@ IHR.addMissions(2, [
     },
 
     {
+        id: 'habitat-g2-05',
         zone: 'jungle',
         title: 'Flower Visitors',
         goal: 'Find every visitor that carries pollen between hibiscus and mango flowers.',
@@ -102,6 +104,7 @@ IHR.addMissions(2, [
     },
 
     {
+        id: 'habitat-g2-06',
         zone: 'lagoon',
         title: 'Count the Kinds',
         goal: 'Compare how many kinds of living things you find on a healthy reef and a harbour wall.',
@@ -153,6 +156,7 @@ IHR.addMissions(2, [
     },
 
     {
+        id: 'habitat-g2-07',
         zone: 'beach',
         title: 'Shade for Turtle Eggs',
         goal: 'Test three nest covers and pick the one that keeps turtle eggs cool.',
@@ -204,6 +208,7 @@ IHR.addMissions(2, [
     },
 
     {
+        id: 'habitat-g2-08',
         zone: 'lagoon',
         title: 'How a Sandbank Grows',
         goal: 'Put the steps in order to show how a new sandbank slowly builds up on the reef.',
@@ -249,6 +254,7 @@ IHR.addMissions(2, [
     },
 
     {
+        id: 'habitat-g2-09',
         zone: 'lagoon',
         title: 'Map the Atoll',
         goal: 'Use the map colours to place each thing in the right part of the atoll.',
@@ -300,6 +306,7 @@ IHR.addMissions(2, [
     },
 
     {
+        id: 'habitat-g2-10',
         zone: 'jungle',
         title: 'Fresh or Salty?',
         goal: 'Sort the island’s water into salty water and fresh water.',
@@ -348,6 +355,7 @@ IHR.addMissions(2, [
     },
 
     {
+        id: 'habitat-g2-11',
         zone: 'beach',
         title: 'Shell Sorting',
         goal: 'Sort beach shells into groups by looking closely at their shapes.',

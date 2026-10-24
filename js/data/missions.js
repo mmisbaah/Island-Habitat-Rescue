@@ -837,7 +837,7 @@ IHR.MISSIONS = [
             'Barracuda multiply because the water gets clearer'
         ],
         transferCorrect: 0,
-        hints: ['The heatwave card says producers drop by 60%. Recreate that.', 'Slide producer cover down to 40% or lower, then run the five years.'],
+        hints: ['The heatwave card says producers drop by 60%. Recreate that.', 'Slide producer cover down to exactly 40%, then run the five years.'],
         lab: {
             kind: 'cascade',
             instruction: 'Set how much producer cover is left after the heatwave, then run five years.',

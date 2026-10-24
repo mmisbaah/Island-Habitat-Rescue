@@ -34,6 +34,7 @@ const Mission = {
     mount(el, opts) {
         this.el = el;
         this.m = IHR.MISSIONS.find(x => x.id === opts.id);
+        if (!this.m) { el.innerHTML = '<p>Mission unavailable. Choose a site from the island.</p>'; return; }
         this.mode = this.MODES[opts.mode] ? opts.mode : null;
         this.rt = {
             prediction: null,
@@ -54,6 +55,8 @@ const Mission = {
     lab() { return IHR.labs[this.m.lab.kind]; },
 
     go(step) {
+        const previous = this.step;
+        const focus = IHR.ui.captureFocus(this.el);
         this.stopTrial();
         // Skipping ahead without a prediction (e.g. after a reload) falls back to Predict
         if (['PLAY', 'EVIDENCE', 'EXPLAIN', 'TRANSFER'].includes(step) && this.rt.prediction === null) step = 'PREDICT';
@@ -75,8 +78,8 @@ const Mission = {
             <section class="mission zone-${m.zone}">
                 <div class="mission-top">
                     ${this.mode
-                        ? `<button class="btn btn-ghost" onclick="App.go('home')">${IHR.icon('back')} Home</button>`
-                        : `<button class="btn btn-ghost" onclick="App.go('hub')">${IHR.icon('map')} Island</button>`}
+                        ? `<button class="btn btn-ghost" ${IHR.ui.action('App.go', 'home')}>${IHR.icon('back')} Home</button>`
+                        : `<button class="btn btn-ghost" ${IHR.ui.action('App.go', 'hub')}>${IHR.icon('map')} Island</button>`}
                     ${this.mode ? `<span class="mode-pill">${this.MODES[this.mode].label}</span>` : ''}
                     <span class="mission-id">Grade ${m.grade} · Mission ${m.num} · ${IHR.ZONES[m.zone].emoji} ${IHR.ZONES[m.zone].name}</span>
                 </div>
@@ -87,6 +90,8 @@ const Mission = {
 
         if (step === 'PLAY') this.refresh();
         this.afterRender(step);
+        if (previous === step) IHR.ui.restoreFocus(this.el, focus);
+        else IHR.ui.focusHeading(this.el);
     },
 
     stepsBar() {
@@ -138,7 +143,7 @@ const Mission = {
             </div>
             <div class="nav-row">
                 <span></span>
-                <button class="btn btn-coral btn-lg" onclick="Mission.go('PREDICT')">Make a prediction ${IHR.icon('next')}</button>
+                <button class="btn btn-coral btn-lg" ${IHR.ui.action('Mission.go', 'PREDICT')}>Make a prediction ${IHR.icon('next')}</button>
             </div>
         `;
     },
@@ -150,12 +155,12 @@ const Mission = {
                 <h2 class="display-sm">What do you predict?</h2>
                 <p class="muted">Pick the idea the clue cards support. The lab will test it.</p>
                 <div class="choice-list">
-                    ${m.predictions.map((p, i) => this.choiceButton(p.emoji, p.label, this.rt.prediction === i, `Mission.pickPrediction(${i})`)).join('')}
+                    ${m.predictions.map((p, i) => this.choiceButton(p.emoji, p.label, this.rt.prediction === i, IHR.ui.action('Mission.pickPrediction', i))).join('')}
                 </div>
             </div>
             <div class="nav-row">
-                <button class="btn btn-ghost" onclick="Mission.go('BRIEF')">${IHR.icon('back')} Clues</button>
-                <button class="btn btn-coral btn-lg" ${this.rt.prediction === null ? 'disabled' : ''} onclick="Mission.go('PLAY')">Open the lab ${IHR.icon('next')}</button>
+                <button class="btn btn-ghost" ${IHR.ui.action('Mission.go', 'BRIEF')}>${IHR.icon('back')} Clues</button>
+                <button class="btn btn-coral btn-lg" ${this.rt.prediction === null ? 'disabled' : ''} ${IHR.ui.action('Mission.go', 'PLAY')}>Open the lab ${IHR.icon('next')}</button>
             </div>
         `;
     },
@@ -177,11 +182,11 @@ const Mission = {
     playBar() {
         return `
             <div class="row">
-                <button class="btn btn-ghost" onclick="Mission.go('PREDICT')">${IHR.icon('back')} Prediction</button>
-                <button class="btn btn-ghost" onclick="Mission.resetLab()">${IHR.icon('reset')} Reset</button>
+                <button class="btn btn-ghost" ${IHR.ui.action('Mission.go', 'PREDICT')}>${IHR.icon('back')} Prediction</button>
+                <button class="btn btn-ghost" ${IHR.ui.action('Mission.resetLab')}>${IHR.icon('reset')} Reset</button>
                 ${this.hintButton()}
             </div>
-            <button class="btn btn-coral btn-lg btn-run" onclick="Mission.run()">${IHR.icon('play')} Run trial</button>
+            <button class="btn btn-coral btn-lg btn-run" ${IHR.ui.action('Mission.run')}>${IHR.icon('play')} Run trial</button>
         `;
     },
 
@@ -203,8 +208,8 @@ const Mission = {
                 </div>
             </div>
             <div class="nav-row">
-                <button class="btn btn-ghost" onclick="Mission.go('PLAY')">${IHR.icon('back')} Back to the lab</button>
-                <button class="btn btn-coral btn-lg" onclick="Mission.go('EXPLAIN')">Explain it ${IHR.icon('next')}</button>
+                <button class="btn btn-ghost" ${IHR.ui.action('Mission.go', 'PLAY')}>${IHR.icon('back')} Back to the lab</button>
+                <button class="btn btn-coral btn-lg" ${IHR.ui.action('Mission.go', 'EXPLAIN')}>Explain it ${IHR.icon('next')}</button>
             </div>
         `;
     },
@@ -217,7 +222,7 @@ const Mission = {
                 <blockquote class="claim">${m.claim}</blockquote>
                 <p class="muted">Which reason backs up this claim?</p>
                 <div class="choice-list" id="explain-choices">
-                    ${m.explainChoices.map((c, i) => this.choiceButton(String.fromCharCode(65 + i), c.text, this.rt.explainChoice === i, `Mission.pickExplain(${i})`, 'is-letter')).join('')}
+                    ${m.explainChoices.map((c, i) => this.choiceButton(String.fromCharCode(65 + i), c.text, this.rt.explainChoice === i, IHR.ui.action('Mission.pickExplain', i), 'is-letter')).join('')}
                 </div>
                 <div class="hint-row">
                     <span>${IHR.icon('bulb')} Stuck?</span>
@@ -225,8 +230,8 @@ const Mission = {
                 </div>
             </div>
             <div class="nav-row">
-                <button class="btn btn-ghost" onclick="Mission.go('EVIDENCE')">${IHR.icon('back')} Evidence</button>
-                <button class="btn btn-coral btn-lg" ${this.rt.explainChoice === null ? 'disabled' : ''} onclick="Mission.submitExplain()">Check my reason ${IHR.icon('next')}</button>
+                <button class="btn btn-ghost" ${IHR.ui.action('Mission.go', 'EVIDENCE')}>${IHR.icon('back')} Evidence</button>
+                <button class="btn btn-coral btn-lg" ${this.rt.explainChoice === null ? 'disabled' : ''} ${IHR.ui.action('Mission.submitExplain')}>Check my reason ${IHR.icon('next')}</button>
             </div>
         `;
     },
@@ -242,12 +247,12 @@ const Mission = {
                     <p>${m.transferQ}</p>
                 </div>
                 <div class="choice-list" id="transfer-choices">
-                    ${m.transferChoices.map((t, i) => this.choiceButton(String.fromCharCode(65 + i), t, this.rt.transferChoice === i, `Mission.pickTransfer(${i})`, 'is-letter')).join('')}
+                    ${m.transferChoices.map((t, i) => this.choiceButton(String.fromCharCode(65 + i), t, this.rt.transferChoice === i, IHR.ui.action('Mission.pickTransfer', i), 'is-letter')).join('')}
                 </div>
             </div>
             <div class="nav-row">
                 <span></span>
-                <button class="btn btn-coral btn-lg" ${this.rt.transferChoice === null ? 'disabled' : ''} onclick="Mission.submitTransfer()">Finish the rescue ${IHR.icon('check')}</button>
+                <button class="btn btn-coral btn-lg" ${this.rt.transferChoice === null ? 'disabled' : ''} ${IHR.ui.action('Mission.submitTransfer')}>Finish the rescue ${IHR.icon('check')}</button>
             </div>
         `;
     },
@@ -281,9 +286,9 @@ const Mission = {
         const next = this.nextMission(m);
 
         // Stars pop in one at a time
-        earned.forEach((e, i) => { if (e.ok) setTimeout(() => IHR.audio.star(i), 450 + i * 380); });
+        earned.forEach((e, i) => { if (e.ok) this.timers.push(setTimeout(() => IHR.audio.star(i), 450 + i * 380)); });
         IHR.audio.success();
-        setTimeout(() => IHR.sippy.say(stars === 3 ? 'Three stars! A perfect rescue!' : 'Rescue complete! Replay to collect every star.', 'cheer'), 300);
+        this.timers.push(setTimeout(() => IHR.sippy.say(stars === 3 ? 'Three stars! A perfect rescue!' : 'Rescue complete! Replay to collect every star.', 'cheer'), 300));
 
         return `
             <div class="summary">
@@ -328,12 +333,12 @@ const Mission = {
                 ` : ''}
 
                 <div class="nav-row is-center">
-                    <button class="btn btn-coral btn-lg" onclick="App.go('hub', { highlight: '${m.id}' })">${IHR.icon('map')} See your island</button>
+                    <button class="btn btn-coral btn-lg" ${IHR.ui.action('App.go', 'hub', { highlight: m.id })}>${IHR.icon('map')} See your island</button>
                     ${this.mode === 'mystery'
-                        ? `<button class="btn btn-sand btn-lg" onclick="IHR.screens.home.mystery()">🎁 Another mystery</button>`
-                        : next && !this.mode ? `<button class="btn btn-sand btn-lg" onclick="App.go('mission', { id: '${next.id}' })">Next: ${next.title} ${IHR.icon('next')}</button>` : ''}
-                    <button class="btn btn-ghost" onclick="App.go('home')">${IHR.icon('back')} Home</button>
-                    <button class="btn btn-ghost" onclick="App.go('mission', { id: '${m.id}'${this.mode ? `, mode: '${this.mode}'` : ''} })">${IHR.icon('reset')} Replay</button>
+                        ? `<button class="btn btn-sand btn-lg" ${IHR.ui.action('IHR.screens.home.mystery')}>🎁 Another mystery</button>`
+                        : next && !this.mode ? `<button class="btn btn-sand btn-lg" ${IHR.ui.action('App.go', 'mission', { id: next.id })}>Next: ${next.title} ${IHR.icon('next')}</button>` : ''}
+                    <button class="btn btn-ghost" ${IHR.ui.action('App.go', 'home')}>${IHR.icon('back')} Home</button>
+                    <button class="btn btn-ghost" ${IHR.ui.action('App.go', 'mission', { id: m.id, mode: this.mode })}>${IHR.icon('reset')} Replay</button>
                 </div>
             </div>
         `;
@@ -346,7 +351,7 @@ const Mission = {
 
     choiceButton(mark, text, on, handler, cls = '') {
         return `
-            <button class="choice ${on ? 'is-on' : ''}" onclick="${handler}" aria-pressed="${on}">
+            <button class="choice ${on ? 'is-on' : ''}" ${handler} aria-pressed="${on}">
                 <span class="choice-mark ${cls}" aria-hidden="true">${mark}</span>
                 <span class="choice-text">${text}</span>
                 <span class="tick-box">${on ? IHR.icon('check') : ''}</span>
@@ -357,14 +362,21 @@ const Mission = {
     hintButton() {
         const total = this.m.hints.length;
         const used = this.rt.hintsUsed;
-        return `<button class="btn btn-ghost hint-btn" onclick="Mission.hint()">${IHR.icon('bulb')} ${used >= total ? 'Repeat hint' : `Hint ${used + 1}/${total}`}</button>`;
+        return `<button class="btn btn-ghost hint-btn" ${IHR.ui.action('Mission.hint')}>${IHR.icon('bulb')} ${used >= total ? 'Repeat hint' : `Hint ${used + 1}/${total}`}</button>`;
     },
 
     /* ───────────── LAB PLUMBING ───────────── */
 
     refresh() {
         const canvas = document.getElementById('lab-canvas');
-        if (canvas) canvas.innerHTML = this.lab().render(this.m.lab, this.rt.lab);
+        if (canvas) {
+            const focus = IHR.ui.captureFocus(canvas);
+            canvas.innerHTML = this.lab().render(this.m.lab, this.rt.lab);
+            if (!IHR.ui.restoreFocus(canvas, focus) && this.m.lab.kind === 'match') {
+                const next = canvas.querySelector(this.rt.lab.selected ? '.slot-place:not(:disabled)' : '.tray button, .slot-body button');
+                if (next) next.focus({ preventScroll: true });
+            }
+        }
     },
 
     act(name, ...args) {
@@ -381,7 +393,6 @@ const Mission = {
 
     drop(event, slotId) {
         event.preventDefault();
-        event.currentTarget.classList.remove('is-over');
         const id = event.dataTransfer.getData('text/plain');
         if (id) this.act('place', id, slotId);
     },
@@ -438,7 +449,7 @@ const Mission = {
             if (!result.note || this.m.lab.trial !== 'energy') IHR.sippy.say('Trial complete! Let’s look at the evidence.', 'cheer');
             bar.innerHTML = `
                 <span class="trial-outcome is-good">${IHR.icon('check')} Trial complete</span>
-                <button class="btn btn-coral btn-lg" onclick="Mission.go('EVIDENCE')">See the evidence ${IHR.icon('next')}</button>
+                <button class="btn btn-coral btn-lg" ${IHR.ui.action('Mission.go', 'EVIDENCE')}>See the evidence ${IHR.icon('next')}</button>
             `;
         } else {
             IHR.audio.error();
@@ -446,7 +457,7 @@ const Mission = {
             IHR.sippy.say(result.message, 'worried', 9000);
             bar.innerHTML = `
                 <span class="trial-outcome is-bad">${IHR.icon('x')} ${result.message}</span>
-                <button class="btn btn-sand btn-lg" onclick="Mission.backToLab()">${IHR.icon('reset')} Back to the lab</button>
+                <button class="btn btn-sand btn-lg" ${IHR.ui.action('Mission.backToLab')}>${IHR.icon('reset')} Back to the lab</button>
             `;
         }
     },

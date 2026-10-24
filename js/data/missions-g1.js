@@ -5,6 +5,7 @@
  */
 IHR.addMissions(1, [
     {
+        id: 'habitat-g1-04',
         zone: 'beach',
         title: 'Parents and Babies',
         goal: 'Match each baby to the parent it will grow up to look like.',
@@ -52,6 +53,7 @@ IHR.addMissions(1, [
     },
 
     {
+        id: 'habitat-g1-05',
         zone: 'jungle',
         title: 'Day or Night?',
         goal: 'Sort the island animals into the ones busy by day and the ones that come out at night.',
@@ -102,6 +104,7 @@ IHR.addMissions(1, [
     },
 
     {
+        id: 'habitat-g1-06',
         zone: 'beach',
         title: 'Warm Sand, Cool Shade',
         goal: 'Measure sand in the open sun and under a palm tree at midday.',
@@ -158,6 +161,7 @@ IHR.addMissions(1, [
     },
 
     {
+        id: 'habitat-g1-07',
         zone: 'jungle',
         title: 'The Sun’s Journey',
         goal: 'Put the sun’s path across the island sky in order, from morning to night.',
@@ -203,6 +207,7 @@ IHR.addMissions(1, [
     },
 
     {
+        id: 'habitat-g1-08',
         zone: 'lagoon',
         title: 'Claws, Shells and Fins',
         goal: 'Match each body part to the way it helps an animal survive.',
@@ -254,6 +259,7 @@ IHR.addMissions(1, [
     },
 
     {
+        id: 'habitat-g1-09',
         zone: 'jungle',
         title: 'What Does a Seedling Need?',
         goal: 'Pick everything a young banana plant needs to grow.',
@@ -299,6 +305,7 @@ IHR.addMissions(1, [
     },
 
     {
+        id: 'habitat-g1-10',
         zone: 'beach',
         title: 'Clean Up the Beach',
         goal: 'Sort what you find on the tide line: what belongs on the beach, and litter to take away.',
@@ -347,6 +354,7 @@ IHR.addMissions(1, [
     },
 
     {
+        id: 'habitat-g1-11',
         zone: 'lagoon',
         title: 'Hide and Seek Lagoon',
         goal: 'Help each animal hide by moving it to the place its colours match.',

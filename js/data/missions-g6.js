@@ -5,6 +5,7 @@
  */
 IHR.addMissions(6, [
     {
+        id: 'habitat-g6-04',
         zone: 'jungle',
         title: 'Inside a Leaf Cell',
         goal: 'Match each part of a plant cell to the job it does.',
@@ -55,6 +56,7 @@ IHR.addMissions(6, [
     },
 
     {
+        id: 'habitat-g6-05',
         zone: 'lagoon',
         title: 'Reef Partnerships',
         goal: 'Classify each pair of reef organisms by the kind of relationship they share.',
@@ -106,6 +108,7 @@ IHR.addMissions(6, [
     },
 
     {
+        id: 'habitat-g6-06',
         zone: 'beach',
         title: 'Rising Seas',
         goal: 'Use a model of a low island to see how sea level rise affects flooding.',
@@ -154,6 +157,7 @@ IHR.addMissions(6, [
     },
 
     {
+        id: 'habitat-g6-07',
         zone: 'beach',
         title: 'Fresh Water for Visitors',
         goal: 'Compare an island’s fresh water use with the rainwater it can collect as visitor numbers grow.',
@@ -205,6 +209,7 @@ IHR.addMissions(6, [
     },
 
     {
+        id: 'habitat-g6-08',
         zone: 'lagoon',
         title: 'Heat-Tough Corals',
         goal: 'Track how a reef’s coral population changes over three heatwaves.',
@@ -253,6 +258,7 @@ IHR.addMissions(6, [
     },
 
     {
+        id: 'habitat-g6-09',
         zone: 'jungle',
         title: 'Two Monsoons',
         goal: 'Sort features of island weather into the two monsoon seasons.',
@@ -302,6 +308,7 @@ IHR.addMissions(6, [
     },
 
     {
+        id: 'habitat-g6-10',
         zone: 'beach',
         title: 'Tsunami Timeline',
         goal: 'Put the events of a tsunami in order, from the sea floor to a distant island.',
@@ -347,6 +354,7 @@ IHR.addMissions(6, [
     },
 
     {
+        id: 'habitat-g6-11',
         zone: 'jungle',
         title: 'Blue Carbon',
         goal: 'Choose the habitats that pull carbon dioxide out of the air and lock it away.',
